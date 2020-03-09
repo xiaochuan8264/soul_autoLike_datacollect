@@ -4,13 +4,41 @@ import random
 import os
 import time
 
-def numGenerator():
-    """本意是想为每次截图控件设置不同名字以免冲突
-        但是发现是可以直接覆盖的，那就算了吧"""
-    count = 1
-    while count:
-        yield count
-        count += 1
+class AutoLike:
+
+    def __init__(self):
+        self.temp_in_phone = '/sdcard/00_Temp/ui.xml'
+
+    def verifyPc(self):
+        file = 'G:/04_Py_Projects/00_MyProjects/operatePhone/Tempdata/ui.xml'
+        if os.path.exists(file):
+            os.remove(file)
+
+    def getcp(self): # getcurrentpage of the phone
+
+        def verify():
+            test = os.popen('adb shell ls sdcard/00_Temp/ui.xml').read()
+            if test.find('No such file or directory') == -1:
+                return True
+            else:
+                return False
+        command_dump = 'adb shell uiautomator dump /sdcard/00_Temp/ui.xml'
+        while True:
+            os.popen(command_dump)
+            time.sleep(1)
+            if verify():
+                break
+
+
+
+
+
+
+
+
+
+
+
 
 def getButtonPage():
     # 获取当前屏幕的所有控件并将文件保存到手机
