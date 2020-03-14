@@ -93,24 +93,23 @@ def getTapPosition(xlmFile):
     nodes = soup.find_all('node')
     taps = []
     for each in nodes:
-        if each.has_attr('resource-id'):
-            if each['resource-id'] == 'cn.soulapp.android:id/square_item_text':
-                taps.append(each)
-
+        if each['resource-id'] == 'cn.soulapp.android:id/ll_double':
+            taps.append(each)
     where_to_tap = []
     def get_position(node_tag):
         pattern = re.compile('\d{1,4}')
         approx_p = pattern.findall(node_tag['bounds'])
-        x_positon = int(approx_p[0]) + abs(int(approx_p[0]) - int(approx_p[2]))//2
-        y_positon = int(approx_p[1]) + abs(int(approx_p[1]) - int(approx_p[3]))//2
+        x_positon = (int(approx_p[0]) + int(approx_p[2]))//2
+        y_positon = (int(approx_p[1]) + int(approx_p[3]))//2
         return (x_positon, y_positon)
     for each in taps:
         p = get_position(each)
         where_to_tap.append(p)
-    print('this page has <%d> times to tap'% len(where_to_tap))
+    # print('this page has <%d> times to tap'% len(where_to_tap))
     return where_to_tap
 
 def ifWrong(y):
+    """超出这个界限会误触到发布瞬间，尽量不误触"""
     if y >= 1588:
         return True
     else:

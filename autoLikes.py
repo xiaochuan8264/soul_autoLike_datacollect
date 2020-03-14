@@ -62,7 +62,8 @@ class AutoLike:
     def _verifyMobile(self):
         """verify if the file exists"""
         test = os.popen('adb shell ls sdcard/00_Temp/ui.xml').read()
-        if test.find('No such file or directory') == -1:
+        # print(test)
+        if test.find('No') == -1:
             self.mobile = True
         else:
             self.mobile = False
@@ -90,31 +91,27 @@ class AutoLike:
         command_pull = "adb pull /sdcard/00_Temp/ui.xml G:/04_Py_Projects/00_MyProjects/operatePhone/Tempdata"
         while True:
             print('first circle')
-            while True:
-                self._verifyMobile()
-                if self.mobile:
-                    self._delMobile
-                else:
-                    break
+            self._verifyMobile()
+            if self.mobile:
+                self._delMobile()
             os.popen(command_dump)
             time.sleep(1)
             self._verifyMobile()
-            if self.mobile == True:
+            time.sleep(1)
+            if self.mobile:
                 break
             else:
                 self.dump_errors += 1
                 self.dump_error()
         while True:
             print('second circle')
-            while True:
-                self._verifyPc()
-                if self.pc:
-                    self._delPc()
-                else:
-                    break
+            self._verifyPc()
+            if self.pc:
+                self._delPc()
             os.popen(command_pull)
             time.sleep(1)
             self._verifyPc()
+            time.sleep(1)
             if self.pc:
                 with open(self._pc_file, 'r', encoding='utf-8') as f:
                     self.screen = f.read()
