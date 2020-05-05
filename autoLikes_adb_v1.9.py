@@ -1,21 +1,34 @@
+"""
+REQUIREMENTS:
+            1. pakages:[os, re, time, threading, appium, stopit]
+            2. environment: [adb, appium]
+                # install adb environment, make sure it works in cmd,
+                  test connection by using 'adb devices' in cmd when your phone
+                  is connected to your computer
+                # Install appium into your computer, then configure
+                  the environment correctly, you may refer to the tutorial in
+                  'https://www.guru99.com/introduction-to-appium.html'
+HOW TO USE:
+            1. test your connection between phone and computer by command 'adb devecies'
+               proceed if successful.
+            2. start appium either from desktop or 'appium' in cmd shell.
+            3. start the program
+"""
 import os
 import re
 import time
 import threading
-# import analyze_planet as ap
 from appium import webdriver
 from selenium.common.exceptions import *
 from stopit import threading_timeoutable as Timeout
 
 def initiate(path):
-    # global driver
     """get all necessay PARAMS that are necessay for this program
        ref['roll_range'] = the range for swiping on the screen
        ref['square'] = the position of square
        ref['latest'] = the position of latest post of soulers"""
-    # print('初始化...')
+
     os.popen('adb shell mkdir /sdcard/00_Temp').read()
-    # os.mkdir(path +'\\Tempfiles')
     ref = {}
     os.popen('adb shell uiautomator dump /sdcard/00_Temp/params.xml').read()
     os.popen('adb pull /sdcard/00_Temp/params.xml %s\\params.xml' % path).read()
@@ -54,8 +67,8 @@ def initiate(path):
     return ref
 
 def verify_page():
+    """To verify if page is at the right panel"""
     global error
-
     @Timeout()
     def square():
         square = driver.find_element_by_id('cn.soulapp.android:id/lotSquare')
@@ -289,9 +302,7 @@ if __name__ == "__main__":
     c = time.time()
     swipe = 'adb shell input swipe %d %d %d %d 10'% params['roll_range']
     stop = 'adb shell input tap %d %d'% params['loading']
-    # i = 0
     blank_page = []
-    # goals = int(input('请输入目标点赞数[点赞数到达自动停止]：'))
     try:
         while True:
             print('已点< %d >赞 [累计耗时：%f ]' % (count, (time.time() - c)))
