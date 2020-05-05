@@ -156,35 +156,38 @@ def extractInfo(info):
     return temp
 
 def write_db(soulers):
-    # db = pymysql.connect(adress, username, passwaord, database)
-    username = input('database username:  ')
-    password = input('database password:  ')
-    db = pymysql.connect('localhost', username, password)
+    db = pymysql.connect('localhost', 'root', 'tyc1234', 'soul_info')
+    # username = input('database username:  ')
+    # password = input('database password:  ')
+    # db = pymysql.connect('localhost', username, password)
     cursor = db.cursor()
-    create_database = """CREATE DATABASE IF NOT EXISTS soul_info"""
-    create_table = """CREATE TABLE IF NOT EXISTS soulers(
-                      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                      planet VARCHAR(100),
-                      time DATETIME,
-                      content TEXT,
-                      tag TEXT,
-                      location VARCHAR(100),
-                      PRIMARY KEY(id));
-                      """
-    cursor.execute(create_database)
-    cursor.execute("use soul_info")
-    cursor.execute(create_table)
+    # create_database = """CREATE DATABASE IF NOT EXISTS soul_info"""
+    # create_table = """CREATE TABLE IF NOT EXISTS soulers(
+    #                   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    #                   planet VARCHAR(100),
+    #                   time DATETIME,
+    #                   content TEXT,
+    #                   tag TEXT,
+    #                   location VARCHAR(100),
+    #                   PRIMARY KEY(id));
+    #                   """
+    # cursor.execute(create_database)
+    # cursor.execute("use soul_info")
+    # cursor.execute(create_table)
     print('写入数据到数据库')
     for i in soulers:
         # print('写入第 %d 条数据到数据库' % (i +1))
         temp = extractInfo(i)
         # temp.insert(0, i+1)
         try:
-            sql_1 = '''INSERT INTO soulers(planet, time, content, tag, location) VALUES ("%s", "%s", "%s", "%s", "%s")'''% tuple(temp)
+            sql_1 = '''INSERT INTO soulers(planet, time, content, tag, location) VALUES ("%s", "%s", "%s", "%s", "%s");'''% tuple(temp)
             cursor.execute(sql_1)
         except pymysql.err.InternalError as e:
             print('出错了...', e)
             break
+        except pymysql.err.DataError as e:
+            print('跳过一条数据')
+            continue
     print('成功写入 %d 条数据到数据库' % len(soulers))
     cursor.connection.commit()
     db.close()
